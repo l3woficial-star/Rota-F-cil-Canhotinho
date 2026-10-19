@@ -1,0 +1,123 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#172033">
+<meta name="description" content="Rota Fácil Canhotinho — ruas, referências e entregas, com armazenamento local.">
+<link rel="manifest" href="./manifest.webmanifest">
+<title>Rota Fácil Canhotinho</title>
+<style>
+:root{--navy:#172033;--blue:#2455c3;--orange:#f06412;--bg:#f4f6fa;--line:#d9dee8;--muted:#687386}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--navy);font-family:system-ui,-apple-system,Segoe UI,Roboto,sans-serif}
+header{background:white;padding:20px 16px 14px;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:2}
+h1{margin:0;font-size:27px;letter-spacing:-.7px}header p{margin:3px 0 14px;color:var(--muted);font-weight:650}
+nav{display:flex;gap:8px;overflow:auto}nav button{flex:1;min-width:max-content;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:#fff;font-weight:700;color:var(--navy)}
+nav button.active{background:var(--navy);color:#fff}
+main{padding:14px;max-width:760px;margin:auto}.stats{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:14px}.stat{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px}.stat strong{font-size:24px;display:block}.stat span{font-size:12px;color:var(--muted)}
+.panel{background:#fff;border:1px solid var(--line);border-radius:16px;padding:14px;margin-bottom:13px}.panel h2{margin:0 0 12px;font-size:19px}
+input,select,textarea{width:100%;font:inherit;border:1px solid #cbd2df;border-radius:10px;padding:11px;margin:5px 0 10px;background:#fff;color:var(--navy)}
+label{display:block;font-size:13px;font-weight:750;color:#4a5568;margin-top:4px}
+button{cursor:pointer}.primary{width:100%;background:var(--orange);color:#fff;border:0;border-radius:11px;padding:13px;font-weight:800;font-size:15px}.secondary{background:#eef2f8;border:1px solid var(--line);border-radius:9px;padding:8px 10px;color:var(--navy);font-weight:700}.danger{color:#a32121;background:#fff0f0;border-color:#f3caca}
+.item{border:1px solid var(--line);border-radius:12px;padding:12px;margin:9px 0}.item h3{margin:0 0 4px;font-size:16px}.item p{margin:4px 0;color:#4f5b6f;white-space:pre-wrap}.item .actions{display:flex;gap:7px;flex-wrap:wrap;margin-top:9px}.tag{display:inline-block;border-radius:999px;padding:4px 8px;background:#edf2ff;color:#234aab;font-size:12px;font-weight:800}
+.row{display:grid;grid-template-columns:1fr 1fr;gap:8px}.hint{color:var(--muted);font-size:12px;line-height:1.5}.empty{padding:18px;text-align:center;color:var(--muted)}
+.hidden{display:none!important}
+footer{text-align:center;padding:20px;color:var(--muted);font-size:12px}
+@media(max-width:420px){.stats{grid-template-columns:repeat(3,1fr)}.stat{padding:9px}.stat strong{font-size:21px}.row{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header>
+<h1>ROTA FÁCIL</h1><p>Canhotinho – PE · dados salvos neste aparelho</p>
+<nav>
+<button class="active" data-tab="ruas">Ruas</button><button data-tab="entregas">Entregas</button><button data-tab="backup">Backup</button>
+</nav>
+</header>
+<main>
+<section id="ruas">
+<div class="stats"><div class="stat"><strong id="countStreets">0</strong><span>Ruas</span></div><div class="stat"><strong id="countNeighborhoods">0</strong><span>Bairros</span></div><div class="stat"><strong id="countDeliveries">0</strong><span>Entregas abertas</span></div></div>
+<div class="panel">
+<h2 id="streetFormTitle">Cadastrar rua / referência</h2>
+<input id="streetId" type="hidden">
+<label for="neighborhood">Bairro</label><input id="neighborhood" placeholder="Ex.: Centro" list="neighborhoodOptions"><datalist id="neighborhoodOptions"></datalist>
+<label for="streetName">Nome da rua / travessa</label><input id="streetName" placeholder="Ex.: Rua das Flores">
+<label for="reference">Referência para localizar</label><textarea id="reference" rows="2" placeholder="Ex.: rua do hospital, perto de..."></textarea>
+<label for="person">Pessoa / apelido (opcional)</label><input id="person" placeholder="Ex.: casa de Dona Maria">
+<button class="primary" id="saveStreet">Salvar rua</button>
+<button class="secondary hidden" id="cancelEdit" style="margin-top:8px">Cancelar edição</button>
+</div>
+<div class="panel"><h2>Pesquisar</h2><input id="searchStreet" placeholder="Pesquisar rua, bairro, referência ou pessoa"><div id="streetList"></div></div>
+</section>
+<section id="entregas" class="hidden">
+<div class="panel">
+<h2>Nova entrega</h2>
+<label for="deliveryName">Nome / identificação da entrega</label><input id="deliveryName" placeholder="Ex.: pedido 125, cliente">
+<label for="deliveryStreet">Rua / referência</label><input id="deliveryStreet" list="streetOptions" placeholder="Digite rua ou referência"><datalist id="streetOptions"></datalist>
+<label for="deliveryDetails">Detalhes (opcional)</label><textarea id="deliveryDetails" rows="2" placeholder="Casa, complemento, telefone etc."></textarea>
+<button class="primary" id="saveDelivery">Adicionar entrega</button>
+<p class="hint">As entregas e alterações ficam salvas localmente neste navegador.</p>
+</div>
+<div class="panel"><h2>Lista de entregas</h2><select id="deliveryFilter"><option value="todas">Todas as entregas</option><option value="Pendente">Pendentes</option><option value="Em rota">Em rota</option><option value="Entregue">Entregues</option></select><div id="deliveryList"></div></div>
+</section>
+<section id="backup" class="hidden">
+<div class="panel">
+<h2>Backup dos dados</h2>
+<p>Faça um backup regularmente para não perder suas ruas e entregas se limpar os dados do navegador ou trocar de aparelho.</p>
+<button class="primary" id="exportBackup">Baixar backup (.json)</button>
+<label for="importFile">Restaurar backup de arquivo JSON</label><input id="importFile" type="file" accept=".json,application/json">
+<p class="hint">A restauração substitui os dados atuais pelos dados do arquivo escolhido. Faça um backup antes de restaurar.</p>
+</div>
+<div class="panel"><h2>Sobre o modo offline</h2><p>Esta versão usa armazenamento local do navegador e pode abrir sem internet depois que o site for hospedado em HTTPS e carregado pelo menos uma vez. Para funcionar offline, o arquivo do site precisa estar publicado com o service worker ativo.</p><p class="hint">Não use a prévia do construtor como única cópia. Faça backups e teste em modo avião antes de depender do app no trabalho.</p></div>
+</section>
+</main>
+<footer>ROTA FÁCIL CANHOTINHO · versão inicial offline-first</footer>
+<script>
+const KEY='rota-facil-canhotinho-v1';
+const seed=[
+{neighborhood:'Elisa Holanda',street:'Rua São José',reference:'Rua de Áurea Mesquita',person:''},
+{neighborhood:'Elisa Holanda',street:'Rua Nossa Senhora das Graças',reference:'Rua sem saída de Adelma',person:''},
+{neighborhood:'Elisa Holanda',street:'Travessa 7 de Setembro',reference:'Rua de Jerônimo Gueiros',person:''},
+{neighborhood:'Elisa Holanda',street:'Rua Padre Cícero',reference:'Rua da ladeira da antiga delegacia',person:''},
+{neighborhood:'Elisa Holanda',street:'Rua 12 de Outubro',reference:'Rua do postinho de Natércia',person:''},
+{neighborhood:'Elisa Holanda',street:'Rua Sete de Setembro',reference:'Rua de Celhinho',person:''},
+{neighborhood:'Alto do Vento',street:'Rua Santa Quitéria',reference:'Rua da capela católica',person:''},
+{neighborhood:'Centro',street:'Rua José Ferreira Leite',reference:'Rua do hospital',person:''}
+];
+let db;
+try{db=JSON.parse(localStorage.getItem(KEY)||'null')}catch(e){db=null}
+if(!db||!Array.isArray(db.streets)||!Array.isArray(db.deliveries))db={streets:seed.map((s,i)=>({...s,id:i+1})),deliveries:[],nextStreetId:9,nextDeliveryId:1};
+function persist(){localStorage.setItem(KEY,JSON.stringify(db));render()}
+function esc(s=''){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+const $=id=>document.getElementById(id);
+function render(){
+ $('countStreets').textContent=db.streets.length;
+ $('countNeighborhoods').textContent=new Set(db.streets.map(s=>s.neighborhood.trim().toLowerCase()).filter(Boolean)).size;
+ $('countDeliveries').textContent=db.deliveries.filter(d=>d.status!=='Entregue').length;
+ const nbs=[...new Set(db.streets.map(s=>s.neighborhood).filter(Boolean))].sort();
+ $('neighborhoodOptions').innerHTML=nbs.map(n=>`<option value="${esc(n)}">`).join('');
+ $('streetOptions').innerHTML=db.streets.map(s=>`<option value="${esc(s.street+' — '+s.neighborhood+' — '+s.reference)}">`).join('');
+ const q=$('searchStreet').value.toLowerCase().trim();
+ const streets=db.streets.filter(s=>[s.neighborhood,s.street,s.reference,s.person].join(' ').toLowerCase().includes(q)).sort((a,b)=>a.neighborhood.localeCompare(b.neighborhood)||a.street.localeCompare(b.street));
+ $('streetList').innerHTML=streets.length?streets.map(s=>`<article class="item"><span class="tag">${esc(s.neighborhood)}</span><h3>${esc(s.street)}</h3><p>${esc(s.reference||'Sem referência cadastrada')}</p>${s.person?`<p><b>Pessoa:</b> ${esc(s.person)}</p>`:''}<div class="actions"><button class="secondary" onclick="editStreet(${s.id})">Editar</button><button class="secondary" onclick="makeDelivery(${s.id})">Criar entrega</button><button class="secondary danger" onclick="deleteStreet(${s.id})">Excluir</button></div></article>`).join(''):'<div class="empty">Nenhuma rua encontrada.</div>';
+ const filter=$('deliveryFilter').value;
+ const ds=db.deliveries.filter(d=>filter==='todas'||d.status===filter).slice().reverse();
+ $('deliveryList').innerHTML=ds.length?ds.map(d=>`<article class="item"><span class="tag">${esc(d.status)}</span><h3>${esc(d.name)}</h3><p>${esc(d.street)}</p>${d.details?`<p>${esc(d.details)}</p>`:''}<div class="actions"><button class="secondary" onclick="cycleDelivery(${d.id})">Alterar status</button><button class="secondary danger" onclick="deleteDelivery(${d.id})">Excluir</button></div></article>`).join(''):'<div class="empty">Nenhuma entrega nesta lista.</div>';
+}
+function clearStreetForm(){ $('streetId').value='';$('neighborhood').value='';$('streetName').value='';$('reference').value='';$('person').value='';$('streetFormTitle').textContent='Cadastrar rua / referência';$('saveStreet').textContent='Salvar rua';$('cancelEdit').classList.add('hidden')}
+function editStreet(id){const s=db.streets.find(x=>x.id===id);if(!s)return;$('streetId').value=id;$('neighborhood').value=s.neighborhood;$('streetName').value=s.street;$('reference').value=s.reference;$('person').value=s.person||'';$('streetFormTitle').textContent='Editar rua / referência';$('saveStreet').textContent='Salvar alterações';$('cancelEdit').classList.remove('hidden');window.scrollTo({top:0,behavior:'smooth'})}
+function deleteStreet(id){if(!confirm('Excluir esta rua? As entregas já registradas não serão apagadas.'))return;db.streets=db.streets.filter(s=>s.id!==id);persist()}
+function makeDelivery(id){const s=db.streets.find(x=>x.id===id);if(!s)return;switchTab('entregas');$('deliveryStreet').value=`${s.street} — ${s.neighborhood} — ${s.reference}`;$('deliveryName').focus()}
+function cycleDelivery(id){const d=db.deliveries.find(x=>x.id===id);if(!d)return;d.status=({'Pendente':'Em rota','Em rota':'Entregue','Entregue':'Pendente'})[d.status]||'Pendente';persist()}
+function deleteDelivery(id){if(!confirm('Excluir esta entrega?'))return;db.deliveries=db.deliveries.filter(d=>d.id!==id);persist()}
+$('saveStreet').onclick=()=>{const neighborhood=$('neighborhood').value.trim(),street=$('streetName').value.trim();if(!neighborhood||!street){alert('Preencha o bairro e o nome da rua.');return}const item={neighborhood,street,reference:$('reference').value.trim(),person:$('person').value.trim()};const id=Number($('streetId').value);if(id){const old=db.streets.find(s=>s.id===id);if(old)Object.assign(old,item)}else db.streets.push({id:db.nextStreetId++, ...item});clearStreetForm();persist()};
+$('cancelEdit').onclick=clearStreetForm;
+$('saveDelivery').onclick=()=>{const name=$('deliveryName').value.trim(),street=$('deliveryStreet').value.trim();if(!name||!street){alert('Preencha a identificação da entrega e a rua/referência.');return}db.deliveries.push({id:db.nextDeliveryId++,name,street,details:$('deliveryDetails').value.trim(),status:'Pendente',createdAt:new Date().toISOString()});$('deliveryName').value='';$('deliveryStreet').value='';$('deliveryDetails').value='';persist()};
+$('searchStreet').addEventListener('input',render);$('deliveryFilter').addEventListener('change',render);
+function switchTab(tab){document.querySelectorAll('main>section').forEach(s=>s.classList.toggle('hidden',s.id!==tab));document.querySelectorAll('nav button').forEach(b=>b.classList.toggle('active',b.dataset.tab===tab))}
+document.querySelectorAll('nav button').forEach(b=>b.onclick=()=>switchTab(b.dataset.tab));
+$('exportBackup').onclick=()=>{const blob=new Blob([JSON.stringify({version:1,exportedAt:new Date().toISOString(),data:db},null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='backup-rota-facil-canhotinho.json';a.click();URL.revokeObjectURL(a.href)};
+$('importFile').onchange=async e=>{const file=e.target.files[0];if(!file)return;try{const raw=JSON.parse(await file.text());const incoming=raw.data||raw;if(!Array.isArray(incoming.streets)||!Array.isArray(incoming.deliveries))throw Error();if(!confirm('Substituir os dados atuais pelos dados deste backup?'))return;db={streets:incoming.streets,deliveries:incoming.deliveries,nextStreetId:incoming.nextStreetId||Math.max(0,...incoming.streets.map(s=>s.id||0))+1,nextDeliveryId:incoming.nextDeliveryId||Math.max(0,...incoming.deliveries.map(d=>d.id||0))+1};persist();alert('Backup restaurado.')}catch(err){alert('Não foi possível ler esse backup. Escolha um arquivo JSON exportado pelo Rota Fácil.')}finally{e.target.value=''}};
+render();
+if('serviceWorker' in navigator){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}))}
+</script>
+</body></html>

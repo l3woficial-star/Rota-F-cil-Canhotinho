@@ -1,0 +1,27 @@
+# Rota Fácil Canhotinho — versão PWA inicial
+
+## O que contém
+- Cadastro, edição, pesquisa e exclusão de ruas/referências.
+- Bairros iniciais e as 8 ruas fornecidas no projeto.
+- Cadastro de entregas e mudança de status: Pendente → Em rota → Entregue.
+- Exportação e restauração de backup JSON.
+- Armazenamento local no navegador (`localStorage`).
+- Service worker para abrir a interface sem conexão depois de publicada em HTTPS e carregada ao menos uma vez.
+
+## Limitação importante
+Esta pasta contém os arquivos da aplicação, mas não está publicada na internet. Para a instalação PWA e o cache offline funcionarem, hospede estes arquivos em um endereço HTTPS (por exemplo, GitHub Pages). Faça a primeira abertura online, aguarde carregar, instale pelo menu do navegador e teste em modo avião. Não confie nos dados sem backups.
+
+## Como publicar gratuitamente com GitHub Pages
+1. Crie/entre em uma conta GitHub e crie um repositório público vazio, por exemplo `rota-facil-canhotinho`.
+2. Envie os quatro arquivos desta pasta para a raiz do repositório: `index.html`, `manifest.webmanifest`, `sw.js`, `icon.svg`.
+3. No repositório, abra Settings → Pages.
+4. Em Build and deployment, escolha Deploy from a branch; branch `main`, folder `/ (root)`, salve.
+5. Aguarde a URL HTTPS aparecer em Settings → Pages.
+6. Abra essa URL no Chrome do Android enquanto estiver online, aguarde carregar e use o menu ⋮ → Adicionar à tela inicial/Instalar app.
+7. Teste: abra uma vez online, desligue Wi‑Fi e dados móveis, abra o ícone e confira ruas, crie uma rua teste, feche e reabra. Se não funcionar offline, não dependa dele até corrigirmos.
+
+## Segurança dos dados
+- Os dados ficam no armazenamento local do navegador/aplicativo neste aparelho.
+- Limpar dados do navegador, desinstalar ou trocar de aparelho pode apagar os dados.
+- Use a aba Backup e guarde o arquivo JSON em local seguro.
+- Este protótipo não sincroniza entre aparelhos e não usa servidor de dados.
